@@ -95,7 +95,7 @@ while True:
     screen.fill(bg_color)
     for player in players:
         player.sprite.x = (tile*player.x)+2
-        player.sprite.y = (tile*player.y)
+        player.sprite.y = (tile*player.y)+2
         pygame.draw.rect(screen, player.color, player.sprite)
 
     pygame.display.flip()
