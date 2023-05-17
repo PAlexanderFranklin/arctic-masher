@@ -16,7 +16,7 @@ screen_width = tile * 50
 screen_height = tile * 40
 
 screen = pygame.display.set_mode((screen_width,screen_height))
-pygame.display.set_caption('monster-masher-clone')
+pygame.display.set_caption('Arctic Masher')
 
 class Player:
     def __init__(self, x, y, color, keys):
@@ -24,33 +24,21 @@ class Player:
         self.y = y
         self.color = color
         self.keys = keys
+        self.commands = {
+            "n": lambda: self.move(0,-1),
+            "ne": lambda: self.move(1,-1),
+            "e": lambda: self.move(1,0),
+            "se": lambda: self.move(1,1),
+            "s": lambda: self.move(0,1),
+            "sw": lambda: self.move(-1,1),
+            "w": lambda: self.move(-1,0),
+            "nw": lambda: self.move(-1,-1),
+        }
         self.sprite = pygame.Rect((tile*x)+2,(tile*y)+2,tile-2,tile-2)
 
     def move(self, x, y):
         self.x += x
         self.y += y
-    
-    def keyPress(self, key):
-        try:
-            command = self.keys[key]
-            if command == "n":
-                self.move(0,-1)
-            if command == "ne":
-                self.move(1,-1)
-            if command == "e":
-                self.move(1,0)
-            if command == "se":
-                self.move(1,1)
-            if command == "s":
-                self.move(0,1)
-            if command == "sw":
-                self.move(-1,1)
-            if command == "w":
-                self.move(-1,0)
-            if command == "nw":
-                self.move(-1,-1)
-        finally:
-            return True
 
 players = []
 players.append(Player(25, 20, red, {
@@ -86,9 +74,11 @@ while True:
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
-            print(event)
             for player in players:
-                player.keyPress(event.key)
+                try:
+                    player.commands[player.keys[event.key]]()
+                except:
+                    pass
 
     keys = pygame.key.get_pressed()
     # Rendering
@@ -96,7 +86,6 @@ while True:
     for player in players:
         player.sprite.x = (tile*player.x)+2
         player.sprite.y = (tile*player.y)+2
-        #your a comment
         pygame.draw.rect(screen, player.color, player.sprite)
 
     pygame.display.flip()
