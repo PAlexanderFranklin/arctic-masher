@@ -2,23 +2,12 @@ import pygame
 import sys
 import random
 
+from constants import *
 from player import *
+from blocks import *
 
 pygame.init()
 clock = pygame.time.Clock()
-
-bg_color = pygame.Color('cornsilk4')
-red = pygame.Color('brown4') 
-blue = pygame.Color('cadetblue3')
-green = pygame.Color('green3')
-black = pygame.Color("black")
-
-tile = 34
-tileCountx = 50
-tileCounty = 30
-
-screen_width = tile * tileCountx
-screen_height = tile * tileCounty
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Arctic Masher')
@@ -81,6 +70,15 @@ players.append(Player(
     gameMap,
 ))
 
+for i in range(300):
+    try:
+        spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+        if gameMap[spot[0]][spot[1]]:
+            raise Exception("spot taken!")
+        gameMap[spot[0]][spot[1]] = Block(spot[0], spot[1], gameMap)
+    except Exception as error:
+        print(error)
+
 for player in players:
     for i in range(50):
         try:
@@ -123,8 +121,14 @@ while True:
 
     # Rendering
     screen.fill(bg_color)
-    for player in players:
-        screen.blit(frame_0, ((tile*player.x)+2, (tile*player.y)+2))
+    for column in gameMap:
+        for spot in column:
+            if not spot:
+                continue
+            elif isinstance(spot, Player):
+                screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
+            elif isinstance(spot, Block):
+                pygame.draw.rect(screen, blue, spot.sprite)
 
     pygame.display.flip()
     clock.tick(60)

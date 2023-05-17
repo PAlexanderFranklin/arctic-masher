@@ -35,7 +35,7 @@ class Player:
 
     def move(self, x, y, caller=False):
         try:
-            if isinstance(caller, Player):
+            if caller:
                 raise Exception("Cannot push other players.")
             if self.gameMap[self.x + x][self.y + y]:
                 self.gameMap[self.x + x][self.y + y].move(x, y, caller=self)
