@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import uuid
 
 from constants import *
 import mapgen
@@ -22,8 +23,9 @@ for i in range(tileCountx):
         column.append(False)
     gameMap.append(column)
 
-players = []
-players.append(Player(
+players = {}
+players["1"] = (Player(
+    "1",
     5,
     5,
     red,
@@ -39,7 +41,8 @@ players.append(Player(
     ],
     gameMap,
 ))
-players.append(Player(
+players["2"] = (Player(
+    "2",
     3,
     3,
     green,
@@ -55,7 +58,8 @@ players.append(Player(
     ],
     gameMap,
 ))
-players.append(Player(
+players["3"] = (Player(
+    "3",
     5,
     5,
     red,
@@ -96,7 +100,7 @@ while True:
 
     keys = pygame.key.get_pressed()
 
-    for player in players:
+    for id, player in players.items():
         player.useKeys(keys)
 
     # Rendering
