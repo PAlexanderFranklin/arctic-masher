@@ -9,11 +9,12 @@ bg_color = pygame.Color('cornsilk4')
 red = pygame.Color('brown4') 
 blue = pygame.Color('cadetblue3')
 green = pygame.Color('green3')
+black = pygame.Color("black")
 
-tile = 34
+tile = 70
 
-screen_width = tile * 50
-screen_height = tile * 40
+screen_width = tile * 10
+screen_height = tile * 10
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Arctic Masher')
@@ -34,14 +35,13 @@ class Player:
             "w": lambda: self.move(-1,0),
             "nw": lambda: self.move(-1,-1),
         }
-        self.sprite = pygame.Rect((tile*x)+2,(tile*y)+2,tile-2,tile-2)
 
     def move(self, x, y):
         self.x += x
         self.y += y
 
 players = []
-players.append(Player(25, 20, red, {
+players.append(Player(3, 3, red, {
     pygame.K_w: "n",
     pygame.K_e: "ne",
     pygame.K_d: "e",
@@ -51,7 +51,7 @@ players.append(Player(25, 20, red, {
     pygame.K_a: "w",
     pygame.K_q: "nw"
 }))
-players.append(Player(25, 20, green, {
+players.append(Player(2,2, green, {
     pygame.K_KP_8: "n",
     pygame.K_KP_9: "ne",
     pygame.K_KP_6: "e",
@@ -61,6 +61,17 @@ players.append(Player(25, 20, green, {
     pygame.K_KP_4: "w",
     pygame.K_KP_7: "nw"
 }))
+
+sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
+
+def get_image(sheet, width, height, scale, colour):
+    image = pygame.Surface((width, height)).convert_alpha()
+    image.blit(sheet, (0, 0), (0, 0, width, height))
+    image = pygame.transform.scale(image, (width * scale, height * scale))
+    image.set_colorkey(colour)
+
+    return image
+frame_0 = get_image(sprite_sheet_image, 32, 32, (tile-2)/32, black)
 
 game_font = pygame.font.Font("freesansbold.ttf",32)
 
@@ -84,9 +95,7 @@ while True:
     # Rendering
     screen.fill(bg_color)
     for player in players:
-        player.sprite.x = (tile*player.x)+2
-        player.sprite.y = (tile*player.y)+2
-        pygame.draw.rect(screen, player.color, player.sprite)
+        screen.blit(frame_0, ((tile*player.x)+2, (tile*player.y)+2))
 
     pygame.display.flip()
     clock.tick(60)
