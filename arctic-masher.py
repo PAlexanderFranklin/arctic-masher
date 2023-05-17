@@ -11,7 +11,7 @@ blue = pygame.Color('cadetblue3')
 green = pygame.Color('green3')
 black = pygame.Color("black")
 
-tile = 70
+tile = 34
 
 screen_width = tile * 10
 screen_height = tile * 10
@@ -24,8 +24,7 @@ class Player:
         self.x = x
         self.y = y
         self.color = color
-        self.keys = keys
-        self.commands = {
+        commands = {
             "n": lambda: self.move(0,-1),
             "ne": lambda: self.move(1,-1),
             "e": lambda: self.move(1,0),
@@ -35,32 +34,44 @@ class Player:
             "w": lambda: self.move(-1,0),
             "nw": lambda: self.move(-1,-1),
         }
+        self.commands = []
+        for key in keys:
+            self.commands.append((key[0], commands[key[1]]))
+        self.sprite = pygame.Rect((tile*x)+2,(tile*y)+2,tile-2,tile-2)
+
+    def useKeys(self, keys):
+        try:
+            for command in self.commands:
+                if keys[command[0]]:
+                    command[1]()
+        except:
+            pass
 
     def move(self, x, y):
         self.x += x
         self.y += y
 
 players = []
-players.append(Player(3, 3, red, {
-    pygame.K_w: "n",
-    pygame.K_e: "ne",
-    pygame.K_d: "e",
-    pygame.K_c: "se",
-    pygame.K_x: "s",
-    pygame.K_z: "sw",
-    pygame.K_a: "w",
-    pygame.K_q: "nw"
-}))
-players.append(Player(2,2, green, {
-    pygame.K_KP_8: "n",
-    pygame.K_KP_9: "ne",
-    pygame.K_KP_6: "e",
-    pygame.K_KP_3: "se",
-    pygame.K_KP_2: "s",
-    pygame.K_KP_1: "sw",
-    pygame.K_KP_4: "w",
-    pygame.K_KP_7: "nw"
-}))
+players.append(Player(5, 5, red, [
+    (pygame.K_w, "n"),
+    (pygame.K_e, "ne"),
+    (pygame.K_d, "e"),
+    (pygame.K_c, "se"),
+    (pygame.K_x, "s"),
+    (pygame.K_z, "sw"),
+    (pygame.K_a, "w"),
+    (pygame.K_q, "nw"),
+]))
+players.append(Player(3, 3, green, [
+    (pygame.K_KP_8, "n"),
+    (pygame.K_KP_9, "ne"),
+    (pygame.K_KP_6, "e"),
+    (pygame.K_KP_3, "se"),
+    (pygame.K_KP_2, "s"),
+    (pygame.K_KP_1, "sw"),
+    (pygame.K_KP_4, "w"),
+    (pygame.K_KP_7, "nw"),
+]))
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
 
@@ -75,23 +86,17 @@ frame_0 = get_image(sprite_sheet_image, 32, 32, (tile-2)/32, black)
 
 game_font = pygame.font.Font("freesansbold.ttf",32)
 
-pygame.key.set_repeat(300, 40)
-
-
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-        if event.type == pygame.KEYDOWN:
-            for player in players:
-                try:
-                    player.commands[player.keys[event.key]]()
-                except:
-                    pass
-
     keys = pygame.key.get_pressed()
+
+    for player in players:
+        player.useKeys(keys)
+
     # Rendering
     screen.fill(bg_color)
     for player in players:
