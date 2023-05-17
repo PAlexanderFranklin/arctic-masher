@@ -22,7 +22,7 @@ def generateMap():
         except Exception as error:
             continue
 
-    for i in range(3):
+    for i in range(25):
         for j in range(50):
             try:
                 spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
