@@ -12,3 +12,7 @@ tileCounty = 25
 
 screen_width = tile * tileCountx
 screen_height = tile * tileCounty
+
+gameMap = []
+players = {}
+enemies = {}

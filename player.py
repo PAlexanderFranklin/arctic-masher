@@ -1,14 +1,14 @@
 import uuid
 
-from constants import *
+from globals import *
 
 class Player:
-    def __init__(self, id, x, y, sprite, keys, gameMap):
+    def __init__(self, id, x, y, sprite, keys):
         self.id = id
         self.x = x
         self.y = y
         self.sprite = sprite
-        self.gameMap = gameMap
+        
         commands = {
             "n": lambda: self.move(0,-1),
             "ne": lambda: self.move(1,-1),
@@ -18,6 +18,7 @@ class Player:
             "sw": lambda: self.move(-1,1),
             "w": lambda: self.move(-1,0),
             "nw": lambda: self.move(-1,-1),
+            "p": lambda: print(enemies),
         }
         self.commands = []
         for key in keys:
@@ -42,12 +43,12 @@ class Player:
         try:
             if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
                 raise Exception("Cannot push off edge!")
-            if self.gameMap[self.x + x][self.y + y]:
-                self.gameMap[self.x + x][self.y + y].pushed(x, y, self, self)
-            self.gameMap[self.x][self.y] = 0
+            if gameMap[self.x + x][self.y + y]:
+                gameMap[self.x + x][self.y + y].pushed(x, y, self, self)
+            gameMap[self.x][self.y] = 0
             self.x += x
             self.y += y
-            self.gameMap[self.x][self.y] = self
+            gameMap[self.x][self.y] = self
         except Exception as error:
             raise error
     

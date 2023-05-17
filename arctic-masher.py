@@ -3,7 +3,7 @@ import sys
 import random
 import uuid
 
-from constants import *
+from globals import *
 import mapgen
 from player import *
 from blocks import *
@@ -15,15 +15,6 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Arctic Masher')
 
-gameMap = []
-
-for i in range(tileCountx):
-    column = []
-    for j in range(tileCounty):
-        column.append(False)
-    gameMap.append(column)
-
-players = {}
 players["1"] = (Player(
     "1",
     5,
@@ -38,8 +29,8 @@ players["1"] = (Player(
         (pygame.K_z, "sw"),
         (pygame.K_a, "w"),
         (pygame.K_q, "nw"),
+        (pygame.K_s, "p"),
     ],
-    gameMap,
 ))
 players["2"] = (Player(
     "2",
@@ -55,8 +46,8 @@ players["2"] = (Player(
         (pygame.K_KP_1, "sw"),
         (pygame.K_KP_4, "w"),
         (pygame.K_KP_7, "nw"),
+        (pygame.K_KP_5, "p"),
     ],
-    gameMap,
 ))
 players["3"] = (Player(
     "3",
@@ -72,11 +63,11 @@ players["3"] = (Player(
         (pygame.K_b, "sw"),
         (pygame.K_g, "w"),
         (pygame.K_t, "nw"),
+        (pygame.K_h, "p"),
     ],
-    gameMap,
 ))
 
-mapgen.generateMap(gameMap, players)
+mapgen.generateMap()
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
 
