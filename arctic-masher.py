@@ -13,8 +13,8 @@ black = pygame.Color("black")
 
 tile = 34
 
-screen_width = tile * 10
-screen_height = tile * 10
+screen_width = tile * 50
+screen_height = tile * 30
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Arctic Masher')
@@ -36,14 +36,21 @@ class Player:
         }
         self.commands = []
         for key in keys:
-            self.commands.append((key[0], commands[key[1]]))
+            self.commands.append([key[0], commands[key[1]], 0, 0])
         self.sprite = pygame.Rect((tile*x)+2,(tile*y)+2,tile-2,tile-2)
 
     def useKeys(self, keys):
         try:
             for command in self.commands:
                 if keys[command[0]]:
-                    command[1]()
+                    if command[2] == 0 or (command[2] > 10 and command[3] > 2):
+                        command[1]()
+                        command[3] = 0
+                    command[2] += 1
+                    command[3] += 1
+                else:
+                    command[2] = 0
+                    command[3] = 0
         except:
             pass
 
@@ -71,6 +78,16 @@ players.append(Player(3, 3, green, [
     (pygame.K_KP_1, "sw"),
     (pygame.K_KP_4, "w"),
     (pygame.K_KP_7, "nw"),
+]))
+players.append(Player(5, 5, red, [
+    (pygame.K_y, "n"),
+    (pygame.K_u, "ne"),
+    (pygame.K_j, "e"),
+    (pygame.K_m, "se"),
+    (pygame.K_n, "s"),
+    (pygame.K_b, "sw"),
+    (pygame.K_g, "w"),
+    (pygame.K_t, "nw"),
 ]))
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
