@@ -1,3 +1,5 @@
+from constants import *
+
 class Player:
     def __init__(self, x, y, sprite, keys, gameMap):
         self.x = x
@@ -35,6 +37,8 @@ class Player:
 
     def move(self, x, y):
         try:
+            if self.x + x > tileCountx - 1 or self.y + y > tileCounty or self.x + x < 0 or self.y + y < 0:
+                raise Exception("Cannot push off edge!")
             if self.gameMap[self.x + x][self.y + y]:
                 self.gameMap[self.x + x][self.y + y].pushed(x, y, self, self)
             self.gameMap[self.x][self.y] = 0

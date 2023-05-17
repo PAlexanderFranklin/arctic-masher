@@ -3,6 +3,7 @@ import sys
 import random
 
 from constants import *
+import mapgen
 from player import *
 from blocks import *
 from enemies import *
@@ -71,39 +72,7 @@ players.append(Player(
     gameMap,
 ))
 
-for i in range(300):
-    try:
-        spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
-        if gameMap[spot[0]][spot[1]]:
-            raise Exception("spot taken!")
-        gameMap[spot[0]][spot[1]] = Block(spot[0], spot[1], gameMap)
-    except Exception as error:
-        print(error)
-
-for i in range(15):
-    try:
-        spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
-        if gameMap[spot[0]][spot[1]]:
-            raise Exception("spot taken!")
-        gameMap[spot[0]][spot[1]] = Enemy(spot[0], spot[1], gameMap)
-    except Exception as error:
-        print(error)
-
-for player in players:
-    for i in range(50):
-        try:
-            spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
-            if gameMap[spot[0]][spot[1]]:
-                raise Exception("spot taken!")
-            gameMap[spot[0]][spot[1]] = player
-            player.x = spot[0]
-            player.y = spot[1]
-            break
-        except Exception as error:
-            print(error)
-            if i > 45:
-                pygame.quit()
-                sys.exit()
+mapgen.generateMap(gameMap, players)
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
 

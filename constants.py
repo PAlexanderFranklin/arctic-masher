@@ -8,7 +8,7 @@ black = pygame.Color("black")
 
 tile = 34
 tileCountx = 50
-tileCounty = 30
+tileCounty = 25
 
 screen_width = tile * tileCountx
 screen_height = tile * tileCounty
