@@ -5,6 +5,7 @@ import random
 from constants import *
 from player import *
 from blocks import *
+from enemies import *
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -79,6 +80,15 @@ for i in range(300):
     except Exception as error:
         print(error)
 
+for i in range(15):
+    try:
+        spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+        if gameMap[spot[0]][spot[1]]:
+            raise Exception("spot taken!")
+        gameMap[spot[0]][spot[1]] = Enemy(spot[0], spot[1], gameMap)
+    except Exception as error:
+        print(error)
+
 for player in players:
     for i in range(50):
         try:
@@ -97,14 +107,15 @@ for player in players:
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
 
-def get_image(sheet, width, height, scale, colour):
+def get_image(sheet, x, y, width, height, scale, colour):
     image = pygame.Surface((width, height)).convert_alpha()
-    image.blit(sheet, (0, 0), (0, 0, width, height))
+    image.blit(sheet, (0, 0), (x, y, width, height))
     image = pygame.transform.scale(image, (width * scale, height * scale))
     image.set_colorkey(colour)
 
     return image
-frame_0 = get_image(sprite_sheet_image, 32, 32, (tile-2)/32, black)
+frame_0 = get_image(sprite_sheet_image, 0, 0, 32, 32, (tile-2)/32, black)
+frame_4 = get_image(sprite_sheet_image, 32, 0, 32, 32, (tile-2)/32, black)
 
 game_font = pygame.font.Font("freesansbold.ttf",32)
 
@@ -125,10 +136,12 @@ while True:
         for spot in column:
             if not spot:
                 continue
-            elif isinstance(spot, Player):
-                screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
             elif isinstance(spot, Block):
                 pygame.draw.rect(screen, blue, spot.sprite)
+            elif isinstance(spot, Enemy):
+                screen.blit(frame_4, ((tile*spot.x)+2, (tile*spot.y)+2))
+            elif isinstance(spot, Player):
+                screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
 
     pygame.display.flip()
     clock.tick(60)
