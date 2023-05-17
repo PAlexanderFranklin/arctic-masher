@@ -33,15 +33,16 @@ class Player:
         except:
             pass
 
-    def move(self, x, y, caller=False):
+    def move(self, x, y):
         try:
-            if caller:
-                raise Exception("Cannot push other players.")
             if self.gameMap[self.x + x][self.y + y]:
-                self.gameMap[self.x + x][self.y + y].move(x, y, caller=self)
+                self.gameMap[self.x + x][self.y + y].pushed(x, y, self, self)
             self.gameMap[self.x][self.y] = 0
             self.x += x
             self.y += y
             self.gameMap[self.x][self.y] = self
         except Exception as error:
             raise error
+    
+    def pushed(self, x, y, caller, pusher):
+        raise Exception("Cannot push other players.")
