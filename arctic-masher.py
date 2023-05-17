@@ -2,6 +2,8 @@ import pygame
 import sys
 import random
 
+from player import *
+
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -12,83 +14,88 @@ green = pygame.Color('green3')
 black = pygame.Color("black")
 
 tile = 34
+tileCountx = 50
+tileCounty = 30
 
-screen_width = tile * 50
-screen_height = tile * 30
+screen_width = tile * tileCountx
+screen_height = tile * tileCounty
 
 screen = pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Arctic Masher')
 
-class Player:
-    def __init__(self, x, y, color, keys):
-        self.x = x
-        self.y = y
-        self.color = color
-        commands = {
-            "n": lambda: self.move(0,-1),
-            "ne": lambda: self.move(1,-1),
-            "e": lambda: self.move(1,0),
-            "se": lambda: self.move(1,1),
-            "s": lambda: self.move(0,1),
-            "sw": lambda: self.move(-1,1),
-            "w": lambda: self.move(-1,0),
-            "nw": lambda: self.move(-1,-1),
-        }
-        self.commands = []
-        for key in keys:
-            self.commands.append([key[0], commands[key[1]], 0, 0])
-        self.sprite = pygame.Rect((tile*x)+2,(tile*y)+2,tile-2,tile-2)
+gameMap = []
 
-    def useKeys(self, keys):
-        try:
-            for command in self.commands:
-                if keys[command[0]]:
-                    if command[2] == 0 or (command[2] > 10 and command[3] > 2):
-                        command[1]()
-                        command[3] = 0
-                    command[2] += 1
-                    command[3] += 1
-                else:
-                    command[2] = 0
-                    command[3] = 0
-        except:
-            pass
-
-    def move(self, x, y):
-        self.x += x
-        self.y += y
+for i in range(tileCountx):
+    column = []
+    for j in range(tileCounty):
+        column.append(False)
+    gameMap.append(column)
 
 players = []
-players.append(Player(5, 5, red, [
-    (pygame.K_w, "n"),
-    (pygame.K_e, "ne"),
-    (pygame.K_d, "e"),
-    (pygame.K_c, "se"),
-    (pygame.K_x, "s"),
-    (pygame.K_z, "sw"),
-    (pygame.K_a, "w"),
-    (pygame.K_q, "nw"),
-]))
-players.append(Player(3, 3, green, [
-    (pygame.K_KP_8, "n"),
-    (pygame.K_KP_9, "ne"),
-    (pygame.K_KP_6, "e"),
-    (pygame.K_KP_3, "se"),
-    (pygame.K_KP_2, "s"),
-    (pygame.K_KP_1, "sw"),
-    (pygame.K_KP_4, "w"),
-    (pygame.K_KP_7, "nw"),
-]))
-players.append(Player(5, 5, red, [
-    (pygame.K_y, "n"),
-    (pygame.K_u, "ne"),
-    (pygame.K_j, "e"),
-    (pygame.K_m, "se"),
-    (pygame.K_n, "s"),
-    (pygame.K_b, "sw"),
-    (pygame.K_g, "w"),
-    (pygame.K_t, "nw"),
-]))
+players.append(Player(
+    5,
+    5,
+    red,
+    [
+        (pygame.K_w, "n"),
+        (pygame.K_e, "ne"),
+        (pygame.K_d, "e"),
+        (pygame.K_c, "se"),
+        (pygame.K_x, "s"),
+        (pygame.K_z, "sw"),
+        (pygame.K_a, "w"),
+        (pygame.K_q, "nw"),
+    ],
+    gameMap,
+))
+players.append(Player(
+    3,
+    3,
+    green,
+    [
+        (pygame.K_KP_8, "n"),
+        (pygame.K_KP_9, "ne"),
+        (pygame.K_KP_6, "e"),
+        (pygame.K_KP_3, "se"),
+        (pygame.K_KP_2, "s"),
+        (pygame.K_KP_1, "sw"),
+        (pygame.K_KP_4, "w"),
+        (pygame.K_KP_7, "nw"),
+    ],
+    gameMap,
+))
+players.append(Player(
+    5,
+    5,
+    red,
+    [
+        (pygame.K_y, "n"),
+        (pygame.K_u, "ne"),
+        (pygame.K_j, "e"),
+        (pygame.K_m, "se"),
+        (pygame.K_n, "s"),
+        (pygame.K_b, "sw"),
+        (pygame.K_g, "w"),
+        (pygame.K_t, "nw"),
+    ],
+    gameMap,
+))
+
+for player in players:
+    for i in range(50):
+        try:
+            spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+            if gameMap[spot[0]][spot[1]]:
+                raise Exception("spot taken!")
+            gameMap[spot[0]][spot[1]] = player
+            player.x = spot[0]
+            player.y = spot[1]
+            break
+        except Exception as error:
+            print(error)
+            if i > 45:
+                pygame.quit()
+                sys.exit()
 
 sprite_sheet_image = pygame.image.load('assets/penguin.png').convert_alpha()
 
