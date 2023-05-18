@@ -35,6 +35,19 @@ def generateMap():
             except Exception as error:
                 continue
 
+    for i in range(1):
+        for j in range(50):
+            try:
+                spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+                if gameMap[spot[0]][spot[1]]:
+                    raise Exception("spot taken!")
+                newEnemy = Smart(uuid.uuid4(), spot[0], spot[1])
+                gameMap[spot[0]][spot[1]] = newEnemy
+                enemies[newEnemy.id] = newEnemy
+                break
+            except Exception as error:
+                continue
+
     for id, player in players.items():
         maxTries = 5
         for i in range(maxTries + 1):

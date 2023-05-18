@@ -14,7 +14,7 @@ def buildPathMap(x, y):
     pathMap[x][y] = (x,y,(0,0))
     currentTiles = [pathMap[x][y]]
     newTiles = set()
-    while len(currentTiles) > 0:
+    while True:
         for tile in currentTiles:
             for i in range(-1,2):
                 for j in range(-1,2):
@@ -24,6 +24,8 @@ def buildPathMap(x, y):
                         pathMap[newX][newY] = (newX,newY,(-i,-j))
                         if not gameMap[newX][newY]:
                             newTiles.add(pathMap[newX][newY])
+        if len(currentTiles) < 1:
+            break
         currentTiles = list(newTiles)
         newTiles = set()
     return pathMap
@@ -40,6 +42,7 @@ class Player:
         self.PLAYER = True
         self.kills = 0
         self.lives = 3
+        self.alive = True
         
         commands = {
             "n": lambda: self.move(0,-1),
@@ -118,6 +121,7 @@ class Player:
         for i in range(maxTries + 1):
             if self.lives < 1:
                 del players[self.id]
+                self.alive = False
                 break
             if i == maxTries:
                 raise Exception("No spots found for player!")
@@ -129,6 +133,10 @@ class Player:
                 self.x = spot[0]
                 self.y = spot[1]
                 self.lives -= 1
+                try:
+                    self.buildOwnPathMap()
+                except Exception as error:
+                    print(error)
                 break
             except Exception as error:
                 continue

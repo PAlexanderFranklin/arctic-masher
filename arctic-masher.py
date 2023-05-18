@@ -86,6 +86,7 @@ def main():
 
         return image
     frame_0 = get_image(sprite_sheet_image, 0, 0, 32, 32, (tile-2)/32, black)
+    frame_1 = get_image(sprite_sheet_image, 0, 32, 32, 32, (tile-2)/32, black)
     frame_4 = get_image(sprite_sheet_image, 32, 0, 32, 32, (tile-2)/32, black)
 
     game_font = pygame.font.Font("freesansbold.ttf",32)
@@ -113,15 +114,18 @@ def main():
                     continue
                 elif isinstance(spot, Block):
                     pygame.draw.rect(screen, spot.color, spot.sprite)
+                elif isinstance(spot, Smart):
+                    screen.blit(frame_1, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                 elif isinstance(spot, Enemy):
                     screen.blit(frame_4, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
-                    spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
                 elif isinstance(spot, Player):
                     screen.blit(frame_0, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
-                    spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
                     scoreSurface = game_font.render(f'player {spot.id} kills: {spot.kills} lives: {spot.lives}', False, black)
                     screen.blit(scoreSurface, (500*int(spot.id) - 400, screen_height - bottomBarHeight + 20))
-
+                try:
+                    spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
+                except:
+                    pass
         pygame.display.flip()
         clock.tick(60)
 
