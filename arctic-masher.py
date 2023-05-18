@@ -114,10 +114,8 @@ def main():
                     continue
                 elif isinstance(spot, Block):
                     pygame.draw.rect(screen, spot.color, spot.sprite)
-                elif isinstance(spot, Smart):
-                    screen.blit(frame_1, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                 elif isinstance(spot, Enemy):
-                    screen.blit(frame_4, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
+                    screen.blit(spot.sprite, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                 elif isinstance(spot, Player):
                     screen.blit(frame_0, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                     scoreSurface = game_font.render(f'player {spot.id} kills: {spot.kills} lives: {spot.lives}', False, black)

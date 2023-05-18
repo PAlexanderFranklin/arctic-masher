@@ -17,6 +17,25 @@ def findClosestPlayer(x, y):
         closestPlayerPosition = {"difference": difference, "distance": distance, "player": player}
     return closestPlayerPosition
 
+def randomizeMovement(weightsx, weightsy, diff, wrongChance):
+    weightsx = [-diff[0], abs(diff[1]), diff[0]]
+    if weightsx[0] < 0:
+        weightsx[0] = weightsx[2]*wrongChance
+    elif weightsx[2] < 0:
+        weightsx[2] = weightsx[0]*wrongChance
+    else:
+        weightsx[0] = max(weightsx[1]/(15.1-weightsx[1]*0.5), 1)
+        weightsx[2] = weightsx[0]
+    weightsy = [-diff[1], abs(diff[0]), diff[1]]
+    if weightsy[0] < 0:
+        weightsy[0] = weightsy[2]*wrongChance
+    elif weightsy[2] < 0:
+        weightsy[2] = weightsy[0]*wrongChance
+    else:
+        weightsy[0] = max(weightsy[1]/(15.1-weightsy[1]*0.5), 1)
+        weightsy[2] = weightsy[0]
+    return (weightsx, weightsy)
+
 class Enemy:
     def __init__(self, id, x, y):
         self.id = id
@@ -27,6 +46,8 @@ class Enemy:
         # self.AITime = random.randint(350, 600)
         self.AITime = random.randint(10, 50)
         self.deathColor = white
+        self.sprite = pygame.Surface((32,32), pygame.SRCALPHA)
+        pygame.draw.circle(self.sprite, white, (16,16), 10)
         
     def die(self):
         del enemies[self.id]
@@ -61,22 +82,12 @@ class Enemy:
         if self.AITime < 1:
             try:
                 diff = findClosestPlayer(self.x, self.y)["difference"]
-                weightsx = [-diff[0], abs(diff[1]), diff[0]]
-                if weightsx[0] < 0:
-                    weightsx[0] = weightsx[2]/6
-                elif weightsx[2] < 0:
-                    weightsx[2] = weightsx[0]/6
-                else:
-                    weightsx[0] = weightsx[1]/8
-                    weightsx[2] = weightsx[1]/8
-                weightsy = [-diff[1], abs(diff[0]), diff[1]]
-                if weightsy[0] < 0:
-                    weightsy[0] = weightsy[2]/6
-                elif weightsy[2] < 0:
-                    weightsy[2] = weightsy[0]/6
-                else:
-                    weightsy[0] = weightsy[1]/8
-                    weightsy[2] = weightsy[1]/8
+                weightsx = [1,1,1]
+                weightsy = [1,1,1]
+                randomWeights = randomizeMovement(weightsx, weightsy, diff, 0.15)
+                print(randomWeights, diff)
+                weightsx = randomWeights[0]
+                weightsy = randomWeights[1]
                 movementx = random.choices([-1, 0, 1], weightsx)[0]
                 movementy = random.choices([-1, 0, 1], weightsy)[0]
                 self.move(movementx, movementy)
@@ -90,6 +101,8 @@ class Smart(Enemy):
         self.deathColor = red
         self.trackedPlayer = False
         self.trackingCounter = 0
+        self.sprite = pygame.Surface((32,32), pygame.SRCALPHA)
+        pygame.draw.circle(self.sprite, red, (16,16), 12)
     
     def runAI(self):
         self.AITime -= 1
@@ -107,6 +120,10 @@ class Smart(Enemy):
                         fastDir = pathMap[self.x][self.y][2]
                         weightsx[1 + fastDir[0]] = 30
                         weightsy[1 + fastDir[1]] = 30
+                    else:
+                        randomWeights = randomizeMovement(weightsx, weightsy, self.trackedPlayer["difference"], 0.32)
+                        weightsx = randomWeights[0]
+                        weightsy = randomWeights[1]
                     movementx = random.choices([-1, 0, 1], weightsx)[0]
                     movementy = random.choices([-1, 0, 1], weightsy)[0]
                     self.move(movementx, movementy)
