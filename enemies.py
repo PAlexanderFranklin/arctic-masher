@@ -60,8 +60,8 @@ class Enemy:
         self.AITime -= 1
         if self.AITime < 1:
             try:
-                closestPlayer = findClosestPlayer(self.x, self.y)
-                weightsx = [-closestPlayer["difference"][0], abs(closestPlayer["difference"][1]), closestPlayer["difference"][0]]
+                diff = findClosestPlayer(self.x, self.y)["difference"]
+                weightsx = [-diff[0], abs(diff[1]), diff[0]]
                 if weightsx[0] < 0:
                     weightsx[0] = weightsx[2]/6
                 elif weightsx[2] < 0:
@@ -69,7 +69,7 @@ class Enemy:
                 else:
                     weightsx[0] = weightsx[1]/8
                     weightsx[2] = weightsx[1]/8
-                weightsy = [-closestPlayer["difference"][1], abs(closestPlayer["difference"][0]), closestPlayer["difference"][1]]
+                weightsy = [-diff[1], abs(diff[0]), diff[1]]
                 if weightsy[0] < 0:
                     weightsy[0] = weightsy[2]/6
                 elif weightsy[2] < 0:
@@ -95,22 +95,26 @@ class Smart(Enemy):
         self.AITime -= 1
         if self.AITime < 1:
             try:
-                if self.trackedPlayer and self.trackedPlayer.alive:
-                    fastDir = self.trackedPlayer.pathMap[self.x][self.y][2]
-                    # movementx = random.choices([-1, 0, 1], weightsx)[0]
-                    # movementy = random.choices([-1, 0, 1], weightsy)[0]
-                    movementx = fastDir[0]
-                    movementy = fastDir[1]
-                    # self.move(movementx, movementy)
+                if self.trackingCounter < 1:
+                    self.AITime = random.randint(150, 250)
+                    self.trackingCounter = 9
+                    self.trackedPlayer = False
+                elif self.trackedPlayer and self.trackedPlayer["player"].alive:
+                    pathMap = self.trackedPlayer["player"].pathMap
+                    weightsx = [1,1,1]
+                    weightsy = [1,1,1]
+                    if pathMap[self.x][self.y]:
+                        fastDir = pathMap[self.x][self.y][2]
+                        weightsx[1 + fastDir[0]] = 30
+                        weightsy[1 + fastDir[1]] = 30
+                    movementx = random.choices([-1, 0, 1], weightsx)[0]
+                    movementy = random.choices([-1, 0, 1], weightsy)[0]
+                    self.move(movementx, movementy)
                     self.trackingCounter -= 1
-                    if self.trackingCounter < 1:
-                        self.AITime = random.randint(500, 1000)
-                        self.trackedPlayer = False
                     self.AITime = random.randint(10, 15)
                 else:
                     closestPlayer = findClosestPlayer(self.x, self.y)
-                    self.trackedPlayer = closestPlayer["player"]
-                    self.trackingCounter = 8
+                    self.trackedPlayer = closestPlayer
                     self.AITime = random.randint(10, 15)
             except Exception as error:
-                print(error)
+                pass

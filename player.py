@@ -5,30 +5,34 @@ from globals import *
 from blocks import *
 
 def buildPathMap(x, y):
-    pathMap = []
-    for i in range(tileCountx):
-        column = []
-        for j in range(tileCounty):
-            column.append(False)
-        pathMap.append(column)
-    pathMap[x][y] = (x,y,(0,0))
-    currentTiles = [pathMap[x][y]]
-    newTiles = set()
-    while True:
-        for tile in currentTiles:
-            for i in range(-1,2):
-                for j in range(-1,2):
-                    newX = tile[0] + i
-                    newY = tile[1] + j
-                    if (i != 0 or j != 0) and not checkOOBounds((newX,newY)) and not pathMap[newX][newY]:
-                        pathMap[newX][newY] = (newX,newY,(-i,-j))
-                        if not gameMap[newX][newY]:
-                            newTiles.add(pathMap[newX][newY])
-        if len(currentTiles) < 1:
-            break
-        currentTiles = list(newTiles)
+    try:
+        pathMap = []
+        for i in range(tileCountx):
+            column = []
+            for j in range(tileCounty):
+                column.append(False)
+            pathMap.append(column)
+        pathMap[x][y] = (x,y,(0,0))
+        currentTiles = [pathMap[x][y]]
         newTiles = set()
-    return pathMap
+        while True:
+            for tile in currentTiles:
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        newX = tile[0] + i
+                        newY = tile[1] + j
+                        if (i != 0 or j != 0) and not checkOOBounds((newX,newY)) and not pathMap[newX][newY]:
+                            pathMap[newX][newY] = (newX,newY,(-i,-j))
+                            if not gameMap[newX][newY]:
+                                newTiles.add(pathMap[newX][newY])
+            if len(currentTiles) < 1:
+                break
+            currentTiles = list(newTiles)
+            newTiles = set()
+        return pathMap
+    except Exception as error:
+        print(error)
+        raise error
 
 class Player:
     def __init__(self, id, x, y, sprite, keys):
@@ -70,6 +74,8 @@ class Player:
                 self.pull = True
             else:
                 self.pull = False
+            if keys[pygame.K_o]:
+                print(self.pathMap)
             for command in self.commands:
                 try:
                     if keys[command[0]]:
@@ -100,16 +106,16 @@ class Player:
             self.x += x
             self.y += y
             gameMap[self.x][self.y] = self
-            for id, player in players.items():
-                try:
-                    player.buildOwnPathMap()
-                except Exception as error:
-                    print(error)
             try:
                 if pulling:
                     gameMap[self.x - 2*x][self.y - 2*y].pulled(x, y)
             except:
                 pass
+            for id, player in players.items():
+                try:
+                    player.buildOwnPathMap()
+                except Exception as error:
+                    print(error)
         except Exception as error:
             raise error
     
