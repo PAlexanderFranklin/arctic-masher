@@ -18,7 +18,7 @@ def findClosestPlayer(x, y):
     return closestPlayerPosition
 
 def randomizeMovement(weightsx, weightsy, diff, wrongChance):
-    weightsx = [-diff[0], abs(diff[1]), diff[0]]
+    weightsx = [-diff[0], abs(diff[1])+0.1, diff[0]]
     if weightsx[0] < 0:
         weightsx[0] = weightsx[2]*wrongChance
     elif weightsx[2] < 0:
@@ -26,7 +26,7 @@ def randomizeMovement(weightsx, weightsy, diff, wrongChance):
     else:
         weightsx[0] = max(weightsx[1]/(15.1-weightsx[1]*0.5), 1)
         weightsx[2] = weightsx[0]
-    weightsy = [-diff[1], abs(diff[0]), diff[1]]
+    weightsy = [-diff[1], abs(diff[0])+0.1, diff[1]]
     if weightsy[0] < 0:
         weightsy[0] = weightsy[2]*wrongChance
     elif weightsy[2] < 0:
@@ -85,7 +85,6 @@ class Enemy:
                 weightsx = [1,1,1]
                 weightsy = [1,1,1]
                 randomWeights = randomizeMovement(weightsx, weightsy, diff, 0.15)
-                print(randomWeights, diff)
                 weightsx = randomWeights[0]
                 weightsy = randomWeights[1]
                 movementx = random.choices([-1, 0, 1], weightsx)[0]
