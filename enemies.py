@@ -21,7 +21,7 @@ class Enemy:
         self.id = id
         self.x = x
         self.y = y
-        self.AITime = random.randint(150, 200)
+        self.AITime = random.randint(350, 600)
         self.ENEMY = True
         
 

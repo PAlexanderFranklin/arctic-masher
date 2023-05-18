@@ -32,11 +32,11 @@ def main():
             (pygame.K_e, "ne"),
             (pygame.K_d, "e"),
             (pygame.K_c, "se"),
-            (pygame.K_x, "s"),
+            (pygame.K_s, "s"),
             (pygame.K_z, "sw"),
             (pygame.K_a, "w"),
             (pygame.K_q, "nw"),
-            (pygame.K_s, "p"),
+            (pygame.K_LSHIFT, "p"),
         ],
     ))
     players["2"] = (Player(
@@ -117,8 +117,8 @@ def main():
                     screen.blit(frame_4, ((tile*spot.x)+2, (tile*spot.y)+2))
                 elif isinstance(spot, Player):
                     screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
-                    scoreSurface = game_font.render(f'{spot.id}: {spot.kills}', False, black)
-                    screen.blit(scoreSurface, (300*int(spot.id), screen_height - bottomBarHeight + 20))
+                    scoreSurface = game_font.render(f'player {spot.id} kills: {spot.kills} lives: {spot.lives}', False, black)
+                    screen.blit(scoreSurface, (500*int(spot.id) - 400, screen_height - bottomBarHeight + 20))
 
         pygame.display.flip()
         clock.tick(60)

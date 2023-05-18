@@ -12,6 +12,7 @@ class Player:
         self.pull = False
         self.PLAYER = True
         self.kills = 0
+        self.lives = 3
         
         commands = {
             "n": lambda: self.move(0,-1),
@@ -74,4 +75,21 @@ class Player:
         raise Exception("Cannot push other players.")
     
     def die(self):
-        del players[self.id]
+        maxTries = 5
+        for i in range(maxTries + 1):
+            if self.lives < 1:
+                del players[self.id]
+                break
+            if i == maxTries:
+                raise Exception("No spots found for player!")
+            try:
+                spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+                if gameMap[spot[0]][spot[1]]:
+                    raise Exception("spot taken!")
+                gameMap[spot[0]][spot[1]] = self
+                self.x = spot[0]
+                self.y = spot[1]
+                self.lives -= 1
+                break
+            except Exception as error:
+                continue
