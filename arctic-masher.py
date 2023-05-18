@@ -32,7 +32,7 @@ def main():
             (pygame.K_e, "ne"),
             (pygame.K_d, "e"),
             (pygame.K_c, "se"),
-            (pygame.K_s, "s"),
+            (pygame.K_x, "s"),
             (pygame.K_z, "sw"),
             (pygame.K_a, "w"),
             (pygame.K_q, "nw"),
@@ -53,7 +53,7 @@ def main():
             (pygame.K_KP_1, "sw"),
             (pygame.K_KP_4, "w"),
             (pygame.K_KP_7, "nw"),
-            (pygame.K_KP_5, "p"),
+            (pygame.K_KP_0, "p"),
         ],
     ))
     # players["3"] = (Player(
@@ -112,11 +112,13 @@ def main():
                 if not spot:
                     continue
                 elif isinstance(spot, Block):
-                    pygame.draw.rect(screen, blue, spot.sprite)
+                    pygame.draw.rect(screen, spot.color, spot.sprite)
                 elif isinstance(spot, Enemy):
-                    screen.blit(frame_4, ((tile*spot.x)+2, (tile*spot.y)+2))
+                    screen.blit(frame_4, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
+                    spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
                 elif isinstance(spot, Player):
-                    screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
+                    screen.blit(frame_0, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
+                    spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
                     scoreSurface = game_font.render(f'player {spot.id} kills: {spot.kills} lives: {spot.lives}', False, black)
                     screen.blit(scoreSurface, (500*int(spot.id) - 400, screen_height - bottomBarHeight + 20))
 

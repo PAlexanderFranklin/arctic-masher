@@ -47,6 +47,7 @@ def generateMap():
                 gameMap[spot[0]][spot[1]] = player
                 player.x = spot[0]
                 player.y = spot[1]
+                player.pathMap = player.buildOwnPathMap()
                 break
             except Exception as error:
                 continue

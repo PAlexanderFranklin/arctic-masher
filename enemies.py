@@ -19,10 +19,11 @@ def findClosestPlayer(x, y):
 class Enemy:
     def __init__(self, id, x, y):
         self.id = id
+        self.ENEMY = True
         self.x = x
         self.y = y
+        self.renderPos = (x,y)
         self.AITime = random.randint(350, 600)
-        self.ENEMY = True
         
 
     def die(self):
@@ -33,6 +34,7 @@ class Enemy:
             wallCrush = self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0
             if wallCrush or hasattr(gameMap[self.x + x][self.y + y], "BLOCK"):
                 pusher.kills += 1
+                caller.color = random.choice([grey, green])
                 self.die()
                 return
         raise Exception("Not crushing enemy!")

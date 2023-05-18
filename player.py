@@ -1,13 +1,41 @@
+import pygame
 import uuid
 
 from globals import *
 from blocks import *
+
+def buildPathMap(x, y):
+    pathMap = []
+    for i in range(tileCountx):
+        column = []
+        for j in range(tileCounty):
+            column.append(False)
+        pathMap.append(column)
+    pathMap[x][y] = (x,y,(0,0))
+    currentTiles = [pathMap[x][y]]
+    newTiles = set()
+    while len(currentTiles) > 0:
+        for tile in currentTiles:
+            for i in range(-1,2):
+                for j in range(-1,2):
+                    newX = tile[0] + i
+                    newY = tile[1] + j
+                    outOfBounds = newX > tileCountx - 1 or newY > tileCounty - 1 or newX < 0 or newY < 0
+                    if (i != 0 or j != 0) and not outOfBounds and not pathMap[newX][newY]:
+                        pathMap[newX][newY] = (newX,newY,(-i,-j))
+                        if not gameMap[newX][newY]:
+                            newTiles.add(pathMap[newX][newY])
+        currentTiles = list(newTiles)
+        newTiles = set()
+    return pathMap
 
 class Player:
     def __init__(self, id, x, y, sprite, keys):
         self.id = id
         self.x = x
         self.y = y
+        self.renderPos = (x,y)
+        self.pathMap = []
         self.sprite = sprite
         self.pull = False
         self.PLAYER = True
@@ -30,6 +58,9 @@ class Player:
                 self.pullKey = key[0]
             else:
                 self.commands.append([key[0], commands[key[1]], 0, 0])
+    
+    def buildOwnPathMap(self):
+        self.pathMap = buildPathMap(self.x, self.y)
 
     def useKeys(self, keys):
         try:
@@ -38,13 +69,17 @@ class Player:
             else:
                 self.pull = False
             for command in self.commands:
-                if keys[command[0]]:
-                    if command[2] == 0 or (command[2] > 10 and command[3] > 2):
-                        command[1]()
+                try:
+                    if keys[command[0]]:
+                        if command[2] == 0 or (command[2] > 10 and command[3] > 2):
+                            command[1]()
+                            command[3] = 0
+                        command[2] += 1
+                        command[3] += 1
+                    else:
+                        command[2] = 0
                         command[3] = 0
-                    command[2] += 1
-                    command[3] += 1
-                else:
+                except:
                     command[2] = 0
                     command[3] = 0
         except:
@@ -63,6 +98,11 @@ class Player:
             self.x += x
             self.y += y
             gameMap[self.x][self.y] = self
+            for id, player in players.items():
+                try:
+                    player.buildOwnPathMap()
+                except Exception as error:
+                    print(error)
             try:
                 if pulling:
                     gameMap[self.x - 2*x][self.y - 2*y].pulled(x, y)

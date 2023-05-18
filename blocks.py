@@ -7,9 +7,10 @@ from enemies import *
 class Block:
     def __init__(self, id, x, y):
         self.id = id
+        self.BLOCK = True
+        self.color = blue
         self.x = x
         self.y = y
-        self.BLOCK = True
         
         self.sprite = pygame.Rect((x*tile) + 2, (y*tile) + 2, tile - 2, tile - 2)
 
