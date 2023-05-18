@@ -3,6 +3,7 @@ import uuid
 import random
 
 from globals import *
+from utilities import *
 from player import *
 from blocks import *
 
@@ -13,7 +14,7 @@ def findClosestPlayer(x, y):
         distance = max(abs(difference[0]), abs(difference[1]))
         if distance > closestPlayerPosition["distance"]:
             continue
-        closestPlayerPosition = {"difference": difference, "distance": distance}
+        closestPlayerPosition = {"difference": difference, "distance": distance, "player": player}
     return closestPlayerPosition
 
 class Enemy:
@@ -31,17 +32,16 @@ class Enemy:
 
     def pushed(self, x, y, caller, pusher):
         if hasattr(pusher, "PLAYER") and hasattr(caller, "BLOCK"):
-            wallCrush = self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0
-            if wallCrush or hasattr(gameMap[self.x + x][self.y + y], "BLOCK"):
+            if checkOOBounds((self.x + x, self.y + y)) or hasattr(gameMap[self.x + x][self.y + y], "BLOCK"):
                 pusher.kills += 1
-                caller.color = random.choice([grey, green])
+                caller.color = white
                 self.die()
                 return
         raise Exception("Not crushing enemy!")
     
     def move(self, x, y):
         try:
-            if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
+            if checkOOBounds((self.x + x, self.y + y)):
                 raise Exception("Cannot move off edge!")
             if gameMap[self.x + x][self.y + y]:
                 if hasattr(gameMap[self.x + x][self.y + y], "PLAYER"):

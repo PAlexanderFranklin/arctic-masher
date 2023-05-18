@@ -86,7 +86,7 @@ class Player:
 
     def move(self, x, y):
         try:
-            if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
+            if checkOOBounds((self.x + x, self.y + y)):
                 raise Exception("Cannot move off edge!")
             pulling = self.pull and hasattr(gameMap[self.x - x][self.y - y], "BLOCK")
             if gameMap[self.x + x][self.y + y]:

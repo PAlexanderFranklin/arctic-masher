@@ -7,6 +7,7 @@ blue = pygame.Color('cadetblue3')
 green = pygame.Color('green3')
 grey = pygame.Color("gray26")
 black = pygame.Color("black")
+white = pygame.Color("white")
 
 tile = 34
 tileCountx = 50
