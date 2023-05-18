@@ -37,8 +37,8 @@ def generateMap():
 
     for id, player in players.items():
         maxTries = 5
-        for i in range(maxTries):
-            if i == maxTries - 1:
+        for i in range(maxTries + 1):
+            if i == maxTries:
                 raise Exception("No spots found for player!")
             try:
                 spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]

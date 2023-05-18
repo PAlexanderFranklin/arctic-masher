@@ -3,8 +3,8 @@ import uuid
 import random
 
 from globals import *
-from player import *
-from blocks import *
+from player import Player
+from blocks import Block
 
 def findClosestPlayer(x, y):
     closestPlayerPosition = {"difference": (1,1), "distance": 9999}
@@ -44,7 +44,7 @@ class Enemy:
                     gameMap[self.x + x][self.y + y].die()
                 else:
                     raise Exception("Path is blocked.")
-            gameMap[self.x][self.y] = 0
+            gameMap[self.x][self.y] = False
             self.x += x
             self.y += y
             gameMap[self.x][self.y] = self
