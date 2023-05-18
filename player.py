@@ -20,8 +20,7 @@ def buildPathMap(x, y):
                 for j in range(-1,2):
                     newX = tile[0] + i
                     newY = tile[1] + j
-                    outOfBounds = newX > tileCountx - 1 or newY > tileCounty - 1 or newX < 0 or newY < 0
-                    if (i != 0 or j != 0) and not outOfBounds and not pathMap[newX][newY]:
+                    if (i != 0 or j != 0) and not checkOOBounds((newX,newY)) and not pathMap[newX][newY]:
                         pathMap[newX][newY] = (newX,newY,(-i,-j))
                         if not gameMap[newX][newY]:
                             newTiles.add(pathMap[newX][newY])

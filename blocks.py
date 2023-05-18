@@ -2,6 +2,7 @@ import pygame
 import uuid
 
 from globals import *
+from utilities import *
 from enemies import *
 
 class Block:
@@ -15,7 +16,7 @@ class Block:
         self.sprite = pygame.Rect((x*tile) + 2, (y*tile) + 2, tile - 2, tile - 2)
 
     def pushed(self, x, y, caller, pusher):
-        if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
+        if checkOOBounds((self.x + x, self.y + y)):
             raise Exception("Cannot push off edge!")
         if gameMap[self.x + x][self.y + y]:
             gameMap[self.x + x][self.y + y].pushed(x, y, self, pusher)
@@ -29,6 +30,8 @@ class Block:
     def pulled(self, x, y):
         for i in range(-1,2):
             for j in range(-1,2):
+                if checkOOBounds((self.x + i, self.y + j)):
+                    continue
                 if hasattr(gameMap[self.x + i][self.y + j], "ENEMY"):
                     raise Exception("Cannot pull a block that is touching an enemy")
         gameMap[self.x][self.y] = False
