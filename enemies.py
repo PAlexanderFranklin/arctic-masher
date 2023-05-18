@@ -3,8 +3,8 @@ import uuid
 import random
 
 from globals import *
-from player import Player
-from blocks import Block
+from player import *
+from blocks import *
 
 def findClosestPlayer(x, y):
     closestPlayerPosition = {"difference": (1,1), "distance": 9999}
@@ -22,15 +22,17 @@ class Enemy:
         self.x = x
         self.y = y
         self.AITime = random.randint(150, 200)
+        self.ENEMY = True
         
 
     def die(self):
         del enemies[self.id]
 
     def pushed(self, x, y, caller, pusher):
-        if isinstance(pusher, Player) and isinstance(caller, Block):
+        if hasattr(pusher, "PLAYER") and hasattr(caller, "BLOCK"):
             wallCrush = self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0
-            if wallCrush or isinstance(gameMap[self.x + x][self.y + y], Block):
+            if wallCrush or hasattr(gameMap[self.x + x][self.y + y], "BLOCK"):
+                pusher.kills += 1
                 self.die()
                 return
         raise Exception("Not crushing enemy!")
@@ -40,7 +42,7 @@ class Enemy:
             if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
                 raise Exception("Cannot move off edge!")
             if gameMap[self.x + x][self.y + y]:
-                if isinstance(gameMap[self.x + x][self.y + y], Player):
+                if hasattr(gameMap[self.x + x][self.y + y], "PLAYER"):
                     gameMap[self.x + x][self.y + y].die()
                 else:
                     raise Exception("Path is blocked.")

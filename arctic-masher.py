@@ -20,6 +20,8 @@ def main():
     screen = pygame.display.set_mode((screen_width,screen_height))
     pygame.display.set_caption('Arctic Masher')
 
+    bottomBar = pygame.Rect(0, screen_height - bottomBarHeight, screen_width, bottomBarHeight)
+
     players["1"] = (Player(
         "1",
         5,
@@ -54,23 +56,23 @@ def main():
             (pygame.K_KP_5, "p"),
         ],
     ))
-    players["3"] = (Player(
-        "3",
-        5,
-        5,
-        red,
-        [
-            (pygame.K_y, "n"),
-            (pygame.K_u, "ne"),
-            (pygame.K_j, "e"),
-            (pygame.K_m, "se"),
-            (pygame.K_n, "s"),
-            (pygame.K_b, "sw"),
-            (pygame.K_g, "w"),
-            (pygame.K_t, "nw"),
-            (pygame.K_h, "p"),
-        ],
-    ))
+    # players["3"] = (Player(
+    #     "3",
+    #     5,
+    #     5,
+    #     red,
+    #     [
+    #         (pygame.K_y, "n"),
+    #         (pygame.K_u, "ne"),
+    #         (pygame.K_j, "e"),
+    #         (pygame.K_m, "se"),
+    #         (pygame.K_n, "s"),
+    #         (pygame.K_b, "sw"),
+    #         (pygame.K_g, "w"),
+    #         (pygame.K_t, "nw"),
+    #         (pygame.K_h, "p"),
+    #     ],
+    # ))
 
     mapgen.generateMap()
 
@@ -104,6 +106,7 @@ def main():
 
         # Rendering
         screen.fill(bg_color)
+        pygame.draw.rect(screen, bar_color, bottomBar)
         for column in gameMap:
             for spot in column:
                 if not spot:
@@ -114,6 +117,8 @@ def main():
                     screen.blit(frame_4, ((tile*spot.x)+2, (tile*spot.y)+2))
                 elif isinstance(spot, Player):
                     screen.blit(frame_0, ((tile*spot.x)+2, (tile*spot.y)+2))
+                    scoreSurface = game_font.render(f'{spot.id}: {spot.kills}', False, black)
+                    screen.blit(scoreSurface, (300*int(spot.id), screen_height - bottomBarHeight + 20))
 
         pygame.display.flip()
         clock.tick(60)

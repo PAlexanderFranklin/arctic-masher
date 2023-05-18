@@ -1,7 +1,7 @@
 import uuid
 
 from globals import *
-from blocks import Block
+from blocks import *
 
 class Player:
     def __init__(self, id, x, y, sprite, keys):
@@ -10,6 +10,8 @@ class Player:
         self.y = y
         self.sprite = sprite
         self.pull = False
+        self.PLAYER = True
+        self.kills = 0
         
         commands = {
             "n": lambda: self.move(0,-1),
@@ -51,7 +53,7 @@ class Player:
         try:
             if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
                 raise Exception("Cannot move off edge!")
-            pulling = self.pull and isinstance(gameMap[self.x - x][self.y - y], Block)
+            pulling = self.pull and hasattr(gameMap[self.x - x][self.y - y], "BLOCK")
             if gameMap[self.x + x][self.y + y]:
                 if pulling:
                     raise Exception("Cannot push and pull at the same time")
