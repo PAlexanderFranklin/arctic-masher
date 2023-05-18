@@ -93,6 +93,9 @@ while True:
 
     for id, player in players.items():
         player.useKeys(keys)
+    
+    for id, enemy in enemies.items():
+        enemy.runAI()
 
     # Rendering
     screen.fill(bg_color)

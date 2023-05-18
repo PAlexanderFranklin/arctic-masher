@@ -18,7 +18,7 @@ class Player:
             "sw": lambda: self.move(-1,1),
             "w": lambda: self.move(-1,0),
             "nw": lambda: self.move(-1,-1),
-            "p": lambda: print(enemies),
+            "p": lambda: print("pull"),
         }
         self.commands = []
         for key in keys:
@@ -42,7 +42,7 @@ class Player:
     def move(self, x, y):
         try:
             if self.x + x > tileCountx - 1 or self.y + y > tileCounty - 1 or self.x + x < 0 or self.y + y < 0:
-                raise Exception("Cannot push off edge!")
+                raise Exception("Cannot move off edge!")
             if gameMap[self.x + x][self.y + y]:
                 gameMap[self.x + x][self.y + y].pushed(x, y, self, self)
             gameMap[self.x][self.y] = 0
@@ -54,3 +54,6 @@ class Player:
     
     def pushed(self, x, y, caller, pusher):
         raise Exception("Cannot push other players.")
+    
+    def die(self):
+        del players[self.id]
