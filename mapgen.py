@@ -6,6 +6,20 @@ from player import *
 from blocks import *
 from enemies import *
 
+def spawnEnemy(type, amount):
+    for i in range(amount):
+        for j in range(50):
+            try:
+                spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
+                if gameMap[spot[0]][spot[1]]:
+                    raise Exception("spot taken!")
+                newEnemy = type(uuid.uuid4(), spot[0], spot[1])
+                gameMap[spot[0]][spot[1]] = newEnemy
+                enemies[newEnemy.id] = newEnemy
+                break
+            except Exception as error:
+                continue
+
 def generateMap():
     gameMap.clear()
     for i in range(tileCountx):
@@ -21,32 +35,10 @@ def generateMap():
             gameMap[spot[0]][spot[1]] = Block(uuid.uuid4(), spot[0], spot[1])
         except Exception as error:
             continue
-
-    for i in range(50):
-        for j in range(50):
-            try:
-                spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
-                if gameMap[spot[0]][spot[1]]:
-                    raise Exception("spot taken!")
-                newEnemy = Enemy(uuid.uuid4(), spot[0], spot[1])
-                gameMap[spot[0]][spot[1]] = newEnemy
-                enemies[newEnemy.id] = newEnemy
-                break
-            except Exception as error:
-                continue
-
-    for i in range(3):
-        for j in range(50):
-            try:
-                spot = [random.randint(0, tileCountx - 1), random.randint(0, tileCounty - 1)]
-                if gameMap[spot[0]][spot[1]]:
-                    raise Exception("spot taken!")
-                newEnemy = Smart(uuid.uuid4(), spot[0], spot[1])
-                gameMap[spot[0]][spot[1]] = newEnemy
-                enemies[newEnemy.id] = newEnemy
-                break
-            except Exception as error:
-                continue
+    
+    spawnEnemy(Enemy, 20)
+    spawnEnemy(Smart, 3)
+    spawnEnemy(Mage, 3)
 
     for id, player in players.items():
         maxTries = 5

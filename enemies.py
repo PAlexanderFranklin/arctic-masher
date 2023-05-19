@@ -134,3 +134,27 @@ class Smart(Enemy):
                     self.AITime = random.randint(10, 15)
             except Exception as error:
                 pass
+
+class Mage(Enemy):
+    def __init__(self, id, x, y):
+        Enemy.__init__(self, id, x, y)
+        self.deathColor = purple
+        self.sprite = pygame.Surface((32,32), pygame.SRCALPHA)
+        pygame.draw.circle(self.sprite, purple, (16,16), 6)
+    
+    def runAI(self):
+        self.AITime -= 1
+        if self.AITime < 1:
+            try:
+                diff = findClosestPlayer(self.x, self.y)["difference"]
+                weightsx = [1,1,1]
+                weightsy = [1,1,1]
+                randomWeights = randomizeMovement(weightsx, weightsy, diff, 0.15)
+                weightsx = randomWeights[0]
+                weightsy = randomWeights[1]
+                movementx = random.choices([-1, 0, 1], weightsx)[0] * random.randint(1,4)
+                movementy = random.choices([-1, 0, 1], weightsy)[0] * random.randint(1,4)
+                self.move(movementx, movementy)
+                self.AITime = random.randint(150, 200)
+            except Exception as error:
+                pass
