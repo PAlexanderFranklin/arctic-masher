@@ -23,7 +23,7 @@ def buildPathMap(x, y):
                         newY = tile[1] + j
                         if (i != 0 or j != 0) and not checkOOBounds((newX,newY)) and not pathMap[newX][newY]:
                             pathMap[newX][newY] = (newX,newY,(-i,-j))
-                            if not gameMap[newX][newY]:
+                            if not gameMap[newX][newY] or hasattr(gameMap[newX][newY], "usesPathMap"):
                                 newTiles.add(pathMap[newX][newY])
             if len(currentTiles) < 1:
                 break

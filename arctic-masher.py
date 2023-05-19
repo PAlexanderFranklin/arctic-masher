@@ -17,11 +17,6 @@ def main():
     pygame.init()
     clock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode((screen_width,screen_height))
-    pygame.display.set_caption('Arctic Masher')
-
-    bottomBar = pygame.Rect(0, screen_height - bottomBarHeight, screen_width, bottomBarHeight)
-
     players["1"] = (Player(
         "1",
         5,
@@ -53,7 +48,7 @@ def main():
             (pygame.K_KP_1, "sw"),
             (pygame.K_KP_4, "w"),
             (pygame.K_KP_7, "nw"),
-            (pygame.K_KP_0, "p"),
+            (pygame.K_RSHIFT, "p"),
         ],
     ))
     # players["3"] = (Player(
@@ -73,6 +68,12 @@ def main():
     #         (pygame.K_h, "p"),
     #     ],
     # ))
+
+
+    gameWindow = pygame.display.set_mode((screen_width,screen_height))
+    pygame.display.set_caption('Arctic Masher')
+
+    bottomBar = pygame.Rect(0, screen_height - bottomBarHeight, screen_width, bottomBarHeight)
 
     mapgen.generateMap()
 
@@ -106,20 +107,20 @@ def main():
             enemy.runAI()
 
         # Rendering
-        screen.fill(bg_color)
-        pygame.draw.rect(screen, bar_color, bottomBar)
+        gameWindow.fill(bg_color)
+        pygame.draw.rect(gameWindow, bar_color, bottomBar)
         for column in gameMap:
             for spot in column:
                 if not spot:
                     continue
                 elif isinstance(spot, Block):
-                    pygame.draw.rect(screen, spot.color, spot.sprite)
+                    pygame.draw.rect(gameWindow, spot.color, spot.sprite)
                 elif isinstance(spot, Enemy):
-                    screen.blit(spot.sprite, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
+                    gameWindow.blit(spot.sprite, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                 elif isinstance(spot, Player):
-                    screen.blit(frame_0, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
+                    gameWindow.blit(frame_0, ((tile*spot.renderPos[0])+2, (tile*spot.renderPos[1])+2))
                     scoreSurface = game_font.render(f'player {spot.id} kills: {spot.kills} lives: {spot.lives}', False, black)
-                    screen.blit(scoreSurface, (500*int(spot.id) - 400, screen_height - bottomBarHeight + 20))
+                    gameWindow.blit(scoreSurface, (500*int(spot.id) - 400, screen_height - bottomBarHeight + 20))
                 try:
                     spot.renderPos = ((spot.x - spot.renderPos[0])/3 + spot.renderPos[0], (spot.y - spot.renderPos[1])/3 + spot.renderPos[1])
                 except:

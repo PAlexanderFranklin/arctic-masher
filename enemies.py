@@ -97,6 +97,8 @@ class Enemy:
 class Smart(Enemy):
     def __init__(self, id, x, y):
         Enemy.__init__(self, id, x, y)
+        self.SMART = True
+        self.usesPathMap = True
         self.deathColor = red
         self.trackedPlayer = False
         self.trackingCounter = 0
@@ -152,8 +154,8 @@ class Mage(Enemy):
                 randomWeights = randomizeMovement(weightsx, weightsy, diff, 0.15)
                 weightsx = randomWeights[0]
                 weightsy = randomWeights[1]
-                movementx = random.choices([-1, 0, 1], weightsx)[0] * random.randint(1,4)
-                movementy = random.choices([-1, 0, 1], weightsy)[0] * random.randint(1,4)
+                movementx = random.choices([-1, 0, 1], weightsx)[0] * random.randint(1,2)
+                movementy = random.choices([-1, 0, 1], weightsy)[0] * random.randint(1,2)
                 self.move(movementx, movementy)
                 self.AITime = random.randint(150, 200)
             except Exception as error:

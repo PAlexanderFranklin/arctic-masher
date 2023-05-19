@@ -1,6 +1,6 @@
 import pygame
 
-bg_color = pygame.Color('lightsalmon')
+bg_color = pygame.Color('lightsalmon3')
 bar_color = pygame.Color('white')
 red = pygame.Color('brown4') 
 blue = pygame.Color('cadetblue3')
