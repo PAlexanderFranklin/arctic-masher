@@ -36,9 +36,9 @@ def generateMap():
         except Exception as error:
             continue
     
-    spawnEnemy(Enemy, 20)
-    spawnEnemy(Smart, 3)
-    spawnEnemy(Mage, 3)
+    spawnEnemy(Enemy, 10)
+    spawnEnemy(Smart, 1)
+    # spawnEnemy(Mage, 3)
 
     for id, player in players.items():
         maxTries = 5
